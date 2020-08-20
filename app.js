@@ -39,7 +39,7 @@ function colorMatchCheck(one,two,three,four) {
 function horizontalWinChecks() {
   for (var row = 0; row < 6; row++){
     for (var col = 0; col < 4; col++){
-      if (colorMatchCheck(returnColor(row,col), returnColor(row,col+1), returnColor(row, col+2), returnColor(row,col+4))){
+      if (colorMatchCheck(returnColor(row,col), returnColor(row,col+1), returnColor(row, col+2), returnColor(row,col+3), returnColor(row,col+4))){
         console.log('vertical');
         return true;
       }else {
@@ -49,3 +49,73 @@ function horizontalWinChecks() {
     }
   }
 }
+
+// Check for vertical wins
+function verticalWinChecks() {
+  for (var col = 0; col < 7; col++){
+    for (var row = 0; row < 3; row++){
+      if (colorMatchCheck(returnColor(row,col), returnColor(row+1,col), returnColor(row+2, col), returnColor(row+3,col))){
+        console.log('vertical');
+        reportWin(row,col);
+        return true;
+      }else {
+        continue;
+      }
+
+    }
+  }
+}
+
+// Check for diagonal wins
+function diagonalWinChecks() {
+  for (var col = 0; col < 5; col++){
+    for (var row = 0; row < 7; row++){
+      if (colorMatchCheck(returnColor(row,col), returnColor(row+1,col+1), returnColor(row+2, col+2), returnColor(row+3,col+3), returnColor(row+4,col+4), returnColor(row+5,col+5), returnColor(row+6,col+6), returnColor(row+7,col+7))){
+        console.log('diag');
+        reportWin(row,col);
+        return true;
+      }else if(colorMatchCheck(returnColor(row,col), returnColor(row-1,col+1), returnColor(row-2, col+2), returnColor(row-3,col+3), returnColor(row-4,col+4), returnColor(row-5,col+5), returnColor(row-6,col+6), returnColor(row-7,col+7))){
+        console.log('diag');
+        reportWin(row,col);
+        return true;
+      }else {
+        continue;
+      }
+
+    }
+  }
+}
+
+var currentPlayer = 1;
+var currentName = player1;
+var currentColor = player1color;
+
+$('h3').text(player1+'it is your turn, pick a column to drop in!')
+
+$('.board button').on('click', function(){
+
+  var col = $(this).closest('td').index();
+
+  var bottomAvail = checkBottom(col);
+
+  changeColor(bottomAvail,col,currentColor);
+
+  if(horizontalWinChecks() || verticalWinChecks() || diagonalWinChecks()){
+    $('h1').text(currentName+' You have won!');
+    $('h3').fadeOut('fast');
+    $('h2').fadeOut('fast');
+  }
+
+currentPlayer = currentPlayer * -1;
+
+if (currentPlayer === 1){
+  currentName = player1;
+  $('h3').text(currentName+'it is your turn.')
+  currentColor = player1Color;
+}else {
+  currentName = player2;
+  $('h3').text(currentName+' ir is your turn')
+  currentColor = player2Color;
+}
+
+})
